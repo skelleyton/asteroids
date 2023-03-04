@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "*.scsss": "scss",
+    "*.graphql": "graphql",
+    "allegro5.h": "c",
+    "allegro.h": "c",
+    "base.h": "c",
+    "allegro_primitives.h": "c",
+    "debug.h": "c",
+    "display.h": "c",
+    "mainmenu.h": "c"
+  }
+}
