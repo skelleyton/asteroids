@@ -45,12 +45,14 @@ void selectMenuItem(struct MENU *menu, ALLEGRO_KEYBOARD_EVENT event) {
   }
 }
 
-void handleResize(struct FONTS fonts, int width, int height, ALLEGRO_DISPLAY *display, struct MENU *menu) {
+void refreshDisplay(struct FONTS fonts, ALLEGRO_DISPLAY *display, struct MENU *menu) {
   int fontSmallHeight = al_get_font_line_height(fonts.fontSmall);
   ALLEGRO_COLOR white = al_map_rgb(255,255,255);
   ALLEGRO_COLOR yellow = al_map_rgb(232, 252, 3);
 
   al_acknowledge_resize(display);
+  int width = al_get_display_width(display);
+  int height = al_get_display_height(display);
   al_clear_to_color(al_map_rgba(0,0,0,1));
 
   al_draw_textf(fonts.fontLarge, white, width/2, height*.3, ALLEGRO_ALIGN_CENTER, "ASTEROIDS");
@@ -101,16 +103,13 @@ int init_main_menu(ALLEGRO_DISPLAY *display_main) {
     fontSmall = fontSmall,
   };
 
-  int display_width = al_get_display_width(display_main);
-  int display_height = al_get_display_height(display_main);
-
   ALLEGRO_EVENT_QUEUE *queue = al_create_event_queue();
 
   al_register_event_source(queue, al_get_mouse_event_source());
   al_register_event_source(queue, al_get_keyboard_event_source());
   al_register_event_source(queue, al_get_display_event_source(display_main));
 
-  handleResize(fonts, display_width, display_height, display_main, menu);
+  refreshDisplay(fonts, display_main, menu);
 
   while (true) {
   al_wait_for_event(queue, &current_event);
@@ -122,7 +121,7 @@ int init_main_menu(ALLEGRO_DISPLAY *display_main) {
         }
         if (current_event.keyboard.keycode == ALLEGRO_KEY_DOWN || current_event.keyboard.keycode == ALLEGRO_KEY_UP) {
           selectMenuItem(menu, current_event.keyboard);
-          handleResize(fonts, al_get_display_width(display_main), al_get_display_height(display_main), display_main, menu);
+          refreshDisplay(fonts, display_main, menu);
         }
         if (current_event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
           if (menu->selectedId == MENU_ITEM_EXIT) {
@@ -133,7 +132,7 @@ int init_main_menu(ALLEGRO_DISPLAY *display_main) {
         break;
 
       case ALLEGRO_EVENT_DISPLAY_RESIZE:
-        handleResize(fonts, current_event.display.width, current_event.display.height, display_main, menu);
+        refreshDisplay(fonts, display_main, menu);
         break;
       case ALLEGRO_EVENT_DISPLAY_CLOSE:
         return 0;
